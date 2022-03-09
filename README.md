@@ -1,0 +1,1 @@
+problem.getCostOfActions(self.actions)

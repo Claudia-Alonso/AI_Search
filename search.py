@@ -88,56 +88,63 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-    from game import Directions
-    s = Directions.SOUTH
-    w = Directions.WEST
-    n = Directions.NORTH
-    e = Directions.EAST
-
-    visited = set()
 
     print("Start:", problem.getStartState())
-    print("Problem: ", problem)
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
-    #print("(4,4)'s successors:", problem.getSuccessors((4,4)))
-    #successors = problem.getSuccessors((4,4))
-    successors = problem.getSuccessors(problem.getStartState())
-    print("Specific successor: ", successors[0]) #Prints the first successor
-    print("Successor type: ", type(successors))
-    next_action = []
 
-    visited.add(problem.getStartState())
-    nodes = util.Stack()
-    a = problem.getStartState()
-    b = problem.getSuccessors(problem.getStartState())
-    print('State of first successor', b[0][0])
+    start_node = problem.getStartState() # (5,5)
+    curr_node = start_node # (5,5)
     
-    # while current state != goal state do the below
-    if 'North' in successors[0]:
-        print('North is present in the list')
-        next_action.append(n)
-    elif 'South' in successors[0]:
-        print('South is present in the list')
-        next_action.append(s)
-    elif 'East' in successors[0]:
-        print('East is present in the list')
-        next_action.append(e)
-    elif 'West' in successors[0]:
-        print('West is present in the list')
-        next_action.append(w)
-    else:
-        print('ERROR: search.py next_action not found (depthFirstSearch)')
+    nodes_visited = []
+    actions = []
+    successors = util.Stack()
+    
+    stack = util.Stack()
+    start_state = (problem.getStartState(), []) # (curr_node, action) -> Need to check if visited node before adding action otherwise all wrong
+    stack.push(start_state)
+    i = 0
 
-    print('Next action:', next_action)
+    end_state = (0,0)
 
-    for successor, action, stepcost in successors:
-        print (successor)
-        if action == 'South':
-            print('FOundndndndnd')
+    while not stack.isEmpty():
+        (curr_node, action) = stack.pop()
+        print('************** Next ************')
+        print('Current node: ', curr_node)
+        
+        if problem.isGoalState(curr_node) == True:
+            end_state = curr_node
+            actions = action
+            break
+        
+        if curr_node not in nodes_visited:
+            nodes_visited.append(curr_node)
+            print('Nodes visited: ', nodes_visited)
 
-    #return [s]
-    return next_action
+            # Get its successors
+            # add successors to top of stack of successors
+            successors = problem.getSuccessors(curr_node)
+            
+            for y in successors:
+                nxt_action = action + [y[1]] # If you use str(y[0]) if adds all the actions together into one word
+                # Have to do it like this otrherwise don't use the correct path to get to the goal.
+                # Using a list of the actions is just a temporary list of the actions taken but some actions are probably wrong 
+                nxt_state = (y[0], nxt_action)
+                #print(nxt_state)
+                stack.push(nxt_state)
+            
+           
+
+
+    if end_state == (0,0):
+        if problem.isGoalState(end_state) == False:
+            print("Goal Not Found")
+    else: print("End State", end_state)
+
+    print('Final Actions: ', actions)
+   
+    print('Nodes visited: ', nodes_visited)
+    return actions
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
