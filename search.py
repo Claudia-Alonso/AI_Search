@@ -88,73 +88,99 @@ def depthFirstSearch(problem):
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
     "*** YOUR CODE HERE ***"
-
-    print("Start:", problem.getStartState())
-    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
-
-    start_node = problem.getStartState() # (5,5)
-    curr_node = start_node # (5,5)
-    
+    stack_of_nodes = util.Stack()
+    # (curr_node, action) -> Need to check if visited node before adding action otherwise all wrong
+    stack_of_nodes.push((problem.getStartState(), []))
     nodes_visited = []
-    actions = []
-    successors = util.Stack()
-    
-    stack = util.Stack()
-    start_state = (problem.getStartState(), []) # (curr_node, action) -> Need to check if visited node before adding action otherwise all wrong
-    stack.push(start_state)
-    i = 0
+    actions_taken = []
 
-    end_state = (0,0)
-
-    while not stack.isEmpty():
-        (curr_node, action) = stack.pop()
-        print('************** Next ************')
-        print('Current node: ', curr_node)
+    while not stack_of_nodes.isEmpty():
+        (curr_node, action) = stack_of_nodes.pop()
         
         if problem.isGoalState(curr_node) == True:
-            end_state = curr_node
-            actions = action
+            actions_taken = action
             break
         
         if curr_node not in nodes_visited:
             nodes_visited.append(curr_node)
-            print('Nodes visited: ', nodes_visited)
-
             # Get its successors
-            # add successors to top of stack of successors
+            # add successors to top of stack_of_nodes of successors
             successors = problem.getSuccessors(curr_node)
-            
-            for y in successors:
-                nxt_action = action + [y[1]] # If you use str(y[0]) if adds all the actions together into one word
+            for i in successors:
+                nxt_action = action + [i[1]] # If you use str(y[0]) if adds all the actions together into one word
                 # Have to do it like this otrherwise don't use the correct path to get to the goal.
                 # Using a list of the actions is just a temporary list of the actions taken but some actions are probably wrong 
-                nxt_state = (y[0], nxt_action)
+                nxt_state = (i[0], nxt_action)
                 #print(nxt_state)
-                stack.push(nxt_state)
+                stack_of_nodes.push(nxt_state)
             
-           
-
-
-    if end_state == (0,0):
-        if problem.isGoalState(end_state) == False:
-            print("Goal Not Found")
-    else: print("End State", end_state)
-
-    print('Final Actions: ', actions)
-   
-    print('Nodes visited: ', nodes_visited)
-    return actions
+    return actions_taken
     util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
+    queue_of_nodes = util.Queue()
+    # (curr_node, action) -> Need to check if visited node before adding action otherwise all wrong
+    queue_of_nodes.push((problem.getStartState(), []))
+    nodes_visited = []
+    actions_taken = []
+
+    while not queue_of_nodes.isEmpty():
+        (curr_node, action) = queue_of_nodes.pop()
+        if problem.isGoalState(curr_node) == True:
+            actions_taken = action
+            break
+        
+        if curr_node not in nodes_visited:
+            nodes_visited.append(curr_node)
+            # Get its successors
+            # add successors to top of stack_of_nodes of successors
+            successors = problem.getSuccessors(curr_node)
+            for i in successors:
+                nxt_action = action + [i[1]] # If you use str(y[0]) if adds all the actions together into one word
+                # Have to do it like this otrherwise don't use the correct path to get to the goal.
+                # Using a list of the actions is just a temporary list of the actions taken but some actions are probably wrong 
+                nxt_state = (i[0], nxt_action)
+                #print(nxt_state)
+                queue_of_nodes.push(nxt_state)
+    
+    #print('Cost:',problem.getCostOfActions(actions_taken))
+    return actions_taken
     util.raiseNotDefined()
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+    queue_of_nodes = util.PriorityQueue()
+    # (curr_node, action) -> Need to check if visited node before adding action otherwise all wrong
+    queue_of_nodes.push((problem.getStartState(), [], 0), (0)) # node, action, cost
+    nodes_visited = []
+    actions_taken = []
+    
+
+    while not queue_of_nodes.isEmpty():
+        (curr_node, action, cost) = queue_of_nodes.pop()
+        if problem.isGoalState(curr_node) == True:
+            actions_taken = action
+            break
+        
+        if curr_node not in nodes_visited:
+            nodes_visited.append(curr_node)
+            # Get its successors
+            # add successors to top of stack_of_nodes of successors
+            successors = problem.getSuccessors(curr_node)
+            for i in successors:
+                nxt_action = action + [i[1]] # If you use str(y[0]) if adds all the actions together into one word
+                # Have to do it like this otrherwise don't use the correct path to get to the goal.
+                nxt_cost = cost + i[2]
+                # Using a list of the actions is just a temporary list of the actions taken but some actions are probably wrong 
+                nxt_state = (i[0], nxt_action, nxt_cost)
+                #print(nxt_state)
+                queue_of_nodes.push(nxt_state, nxt_cost)
+ 
+
+    return actions_taken
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
