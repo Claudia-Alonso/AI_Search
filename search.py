@@ -94,6 +94,8 @@ def depthFirstSearch(problem):
     n = Directions.NORTH
     e = Directions.EAST
 
+    visited = set()
+
     print("Start:", problem.getStartState())
     print("Problem: ", problem)
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
@@ -104,6 +106,14 @@ def depthFirstSearch(problem):
     print("Specific successor: ", successors[0]) #Prints the first successor
     print("Successor type: ", type(successors))
     next_action = []
+
+    visited.add(problem.getStartState())
+    nodes = util.Stack()
+    a = problem.getStartState()
+    b = problem.getSuccessors(problem.getStartState())
+    print('State of first successor', b[0][0])
+    
+    # while current state != goal state do the below
     if 'North' in successors[0]:
         print('North is present in the list')
         next_action.append(n)
@@ -120,6 +130,12 @@ def depthFirstSearch(problem):
         print('ERROR: search.py next_action not found (depthFirstSearch)')
 
     print('Next action:', next_action)
+
+    for successor, action, stepcost in successors:
+        print (successor)
+        if action == 'South':
+            print('FOundndndndnd')
+
     #return [s]
     return next_action
     util.raiseNotDefined()
