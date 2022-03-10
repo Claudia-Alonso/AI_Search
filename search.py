@@ -193,6 +193,42 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
+    # g = cost of movement so far
+    # h = estimated cost until goal (heuristic). A smart guess not exact
+    # f = g + h
+    # At each step pick the node with the lowest f value
+
+    open = util.PriorityQueue()
+    visited = []
+    actions_taken = []
+    open.push((problem.getStartState(), [], 0), 0)  # (node, path, cost), f
+    i = 0
+
+    while open:
+        (curr_node, action, cost) = open.pop()
+
+        # print('Open list: ', open)
+        # print('Minimum of list:',min(open)) # Prints bpth the action and the separte f value too
+        if problem.isGoalState(curr_node) == True:
+            actions_taken = action
+            break
+        
+        if curr_node not in visited:
+            visited.append(curr_node)
+            # Get its successors
+            # add successors to top of stack_of_nodes of successors
+            successors = problem.getSuccessors(curr_node)
+            for i in successors:
+                nxt_action = action + [i[1]] # If you use str(y[0]) if adds all the actions together into one word
+                # Have to do it like this otrherwise don't use the correct path to get to the goal.
+                nxt_cost = cost + i[2]
+                # Using a list of the actions is just a temporary list of the actions taken but some actions are probably wrong 
+                nxt_state = (i[0], nxt_action, nxt_cost)
+                #print(nxt_state)
+                open.push(nxt_state, nxt_cost + heuristic(i[0], problem))
+    
+
+    return actions_taken
     util.raiseNotDefined()
 
 
